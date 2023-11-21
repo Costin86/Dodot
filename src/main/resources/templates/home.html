@@ -1,0 +1,69 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"  
+xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <title>Customer List</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link type="text/css" rel="stylesheet" href="css/bootstrap.min.css" th:href="@{css/bootstrap.min.css}" />
+</head>
+<body>
+<div class="container">
+	<div class="col-md-4">
+		<h1>Customers</h1>
+	</div>
+	<div class="col-md-4">
+        <span  sec:authentication="name"></span>
+		
+	</div>
+	<div class="col-md-4" style="padding:20px 0">
+		<form th:action="@{/logout}" method="post">
+			<input type="submit" value="Sign Out" class="btn btn-sm btn-danger"/>
+		</form>
+	</div>
+	<table class="table table-striped">
+		<tr>
+                <th><a href="?sort=firstName">Name</a></th>
+				<th><a href="?sort=lastName">Surname</a></th>
+                <th><a href="?sort=address">Address</a></th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Issue</th>
+                <th>Invoice</th>
+                <th>Status</th>
+                <th sec:authorize="hasAuthority('ADMIN')"> </th>
+            </tr>  
+    	<tr th:each="customer : ${customers}">
+				<td th:text="${customer.firstName}"></td>
+				<td th:text="${customer.lastName}"></td>
+				<td th:text="${customer.address}"></td>
+				<td th:text="${customer.email}"></td> 	
+				<td th:text="${customer.phone}"></td>
+				<td th:text="${customer.issue}"></td>
+				<td th:text="${customer.invoice}"></td>
+				<td th:text="${customer.status.pcondition}"></td> 
+				<td sec:authorize="hasAuthority('ADMIN')"><a th:href="@{/delete/{id}(id=${customer.id})}" class="btn btn-xs btn-danger">Delete</a></td>
+				<td><a class="btn btn-warning" th:href="@{/edit/{id}(id=${customer.id})}">Edit</a></td>
+				
+			</tr>
+     </table>
+     
+	 <a href="/add" class="btn btn-primary">Add Customer</a>
+	 </br>
+	 </br>
+	 <a href="/home" class="btn btn-primary">Show All </a>
+	 <a href="/showInProgress" class="btn btn-primary">Tasks In progress </a>
+	 <a href="/showNotPossible" class="btn btn-primary">Tasks Not possible </a>
+	 <a href="/showDone" class="btn btn-primary">Tasks Done </a>
+	 </br>
+	 </br>
+	 <!-- Display the count of "Not possible" entries -->
+	
+
+	<h2>Not Possible Percentage: <span th:text="${notPossiblePercentage}"></span>%</h2>
+	
+	 <h2>Total Customers: <span th:text="${totalEntries}"></span></h2>
+	 <h2>Total Sales: <span th:text="${totalSales}"></span> euros</h2>  
+</div>  
+	
+</body>
+</html>
